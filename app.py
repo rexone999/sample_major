@@ -3,7 +3,7 @@
 import streamlit as st
 import tempfile
 from helper import detect_violence
-from email_alert import send_email_alert  # Make sure this function exists and works
+from email_alert import send_email_alert
 
 st.set_page_config(page_title="Violence Detection", layout="centered")
 st.title("🛡️ Violence Detection System")
@@ -18,9 +18,9 @@ if uploaded_file and email:
         tmp_path = tmp.name
 
     st.video(tmp_path)
+    st.info("Processing video for violence detection...")
 
-    with st.spinner("🔍 Detecting violence in the video..."):
-        timestamps = detect_violence(tmp_path)
+    timestamps = detect_violence(tmp_path)
 
     if timestamps:
         st.success("⚠️ Violence detected at the following timestamps:")
