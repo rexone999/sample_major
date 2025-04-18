@@ -2,8 +2,8 @@ import smtplib
 from email.mime.text import MIMEText
 
 def send_email_alert(receiver_email, timestamps):
-    sender_email = "your_email@gmail.com"
-    sender_password = "your_app_password"
+    sender_email = "pranavch.1108@gmail.com"
+    sender_password = "Ap10@w0667"
 
     body = "Violence detected at the following times (seconds):\n" + "\n".join([f"{t:.2f}" for t in timestamps])
     msg = MIMEText(body)
