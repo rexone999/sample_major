@@ -1,6 +1,7 @@
+# helper.py
+
 import cv2
 import numpy as np
-import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 MODEL_PATH = "best_violence_model.h5"
@@ -26,8 +27,15 @@ def extract_frames(video_path, step=30):
     cap.release()
     return np.array(frames), timestamps
 
-def detect_violence(video_path):
+def detect_violence(video_path, threshold=0.5):
     frames, timestamps = extract_frames(video_path)
-    preds = model.predict(frames, verbose=0)
-    violence_times = [timestamps[i] for i, pred in enumerate(preds) if pred[0] > 0.5]
+    if frames.size == 0:
+        return []
+
+    preds = model.predict(frames, verbose=0)  # shape: (N, 1)
+
+    if preds.ndim == 1:
+        preds = np.expand_dims(preds, axis=-1)
+
+    violence_times = [timestamps[i] for i, pred in enumerate(preds) if pred[0] > threshold]
     return violence_times
