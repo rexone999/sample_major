@@ -1,22 +1,22 @@
+# app.py
 import streamlit as st
-import tempfile, os
-from helper import extract_frames, detect_violence
-from email_alert import send_email_alert
+import tempfile
+from helper import detect_violence
+from send_email import send_email_alert
 
-st.title("Violence Detection System")
-st.write("Upload a video to detect violence. Timestamps with violence will be shown and alerts will be sent.")
+st.title("Violence Detection in Videos")
 
-uploaded_file = st.file_uploader("Upload Video", type=["mp4", "avi"])
-email = st.text_input("Enter your email to receive alerts:")
+uploaded_file = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
+email = st.text_input("Enter your email (for alerts)")
 
 if uploaded_file and email:
-    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
         tmp.write(uploaded_file.read())
         tmp_path = tmp.name
 
     st.video(tmp_path)
-
     st.info("Processing video for violence detection...")
+
     timestamps = detect_violence(tmp_path)
 
     if timestamps:
@@ -24,6 +24,5 @@ if uploaded_file and email:
         for t in timestamps:
             st.write(f"- {t:.2f} seconds")
         send_email_alert(email, timestamps)
-        st.info(f"Alert email sent to: {email}")
     else:
-        st.success("No violence detected in the video.")
+        st.success("No violence detected.")
